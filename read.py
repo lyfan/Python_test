@@ -8,16 +8,22 @@ max_num=7
 ############################################
 
 def usage():
-  print "python read.py -d /dev/ttyxxx"
+  print('----------------------------------------')
+  print "eg:[python read.py -d /dev/ttyS0 -w xxxx]"
+  print "options:"
+  print "         -d device name"
+  print "         -w write data"
+  print "         -h help"
+
 
 ############################################
-
 def get_name(dev,num):
     return dev[:-1]+str(num)
 
+
+
 ############################################
-#ser = serial.Serial(sys.argv[1],115200)
-def test_device(device):
+def test_device(device,wstr):
     cur_num=0    
     while cur_num<max_num:
         curdev=get_name(device,cur_num)
@@ -29,6 +35,8 @@ def test_device(device):
 		
           if ret:
               print(curdev+" is opened")
+              #print('write--:'+wstr)
+              #ser.write(wstr)
               numrd=0
               while numrd<3:
                 print("read "+curdev)
@@ -41,26 +49,31 @@ def test_device(device):
               print(curdev+" open failed")
         cur_num+=1
 
+
 #############################################
-print "len: ",len(sys.argv)
+def getArgs(args):
+    pass
+    
 
-device=""
-opts, args = getopt.getopt(sys.argv[1:],"hdt:")
-for op, value in opts:
-    if op == "-d":
-        device=value
-    elif op == "-t":
-        device=value
-        test_device(device)
-        sys.exit()
-    elif op =="-h":
-        usage()
-        sys.exit()	
-    else:
-        print "no args=========="
+
+def main():
+    if len(sys.argv) < 3:
         usage()
         sys.exit()
+    device=''
+    wstr=''
+    opts, args = getopt.getopt(sys.argv[1:],"hw:d:")
 
+    for op, value in opts:
+        print("==============op: "+op+" value: "+value)
+        if op == "-d":
+            device=value
+        elif op == "-w":
+            wstr=value
+        elif op =="-h":
+            usage()
+            sys.exit()	
 
+    test_device(device,wstr)
 
-
+if __name__=='__main__':main()
